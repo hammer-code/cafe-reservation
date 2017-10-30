@@ -13,10 +13,42 @@
     <ul>
       <% cafes.forEach(function (cafe) { %>
         <li>
-          <a href="/cafes/<%= cafe.id %>"><%= cafe.name %></a>
+          <%= cafe.name %>
+          <a href="/cafes/<%= cafe.id %>">Lihat</a>
+          <a href="/cafes/<%= cafe.id %>/edit">Ubah</a>
+          <button class="btn-delete" data-id="<%= cafe.id %>%>">Hapus</button>
         </li>
       <% }) %>
     </ul>
   </div>
+  <script>
+    function deleteCafe(id) {
+      return fetch('/cafes/' + id, {
+        method: 'delete'
+      });
+    }
+
+    var deleteButtons = document.querySelectorAll('.btn-delete');
+
+    deleteButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        var confirmed = confirm('Apakah Anda yakin ingin menghapus data ini?');
+
+        if (!confirmed) {
+          return;
+        }
+
+        var cafeId = button.getAttribute('data-id');
+
+        deleteCafe(cafeId)
+          .then(function () {
+            window.location.reload();
+          })
+          .catch(function () {
+            alert('Gagal menghapus data');
+          });
+      });
+    });
+  </script>
 </body>
 </html>
